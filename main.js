@@ -4,8 +4,8 @@ const AppMenu = require("./AppMenu");
 
 process.env.NODE_ENV = "development";
 
-const isDev = process.env.NODE_ENV !== "production" ? true : false;
-const isMac = process.platform === "darwin" ? true : false;
+const isDev = process.env.NODE_ENV !== "production";
+const isMac = process.platform === "darwin";
 
 let mainWindow;
 
@@ -19,16 +19,12 @@ app.on("ready", () => {
     new AppMenu(isDev);
 });
 
-app.on("window-all-closed", () => {
-    if (!isMac) {
-        app.quit();
-    }
+ipcMain.on("file:add", (e, data) => {
+    console.log(data);
 });
 
-app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createMainWindow();
-    }
+app.on("window-all-closed", () => {
+    app.quit();
 });
 
 app.allowRendererProcessReuse = true;

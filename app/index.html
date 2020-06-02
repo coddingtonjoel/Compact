@@ -15,10 +15,43 @@
     <body>
         <div class="compact">
             <div class="compact-drop">
-                <img id="drop" src="../assets/images/drop.svg" alt="" />
+                <img
+                    id="drop"
+                    src="../assets/images/drop.svg"
+                    draggable="false"
+                    alt=""
+                />
                 <p>Drop any HTML, CSS, or JS files here to minify</p>
             </div>
         </div>
     </body>
     <script src="js/materialize.min.js"></script>
+    <script>
+        const { ipcRenderer } = require("electron");
+
+        document.ondragover = document.ondrop = (e) => {
+            e.dataTransfer.dropEffect = "copy";
+            e.preventDefault();
+        };
+
+        document.ondrop = (e) => {
+            for (let file of e.dataTransfer.files) {
+                // notify user about non-compatible file types
+                if (
+                    file.path.split(".").pop() !== "js" &&
+                    file.path.split(".").pop() !== "css" &&
+                    file.path.split(".").pop() !== "html"
+                ) {
+                    M.toast({
+                        html: `${file.path
+                            .split("/")
+                            .pop()} could not be minified due to incompatible file type.`,
+                    });
+                } else {
+                    ipcRenderer.send("file:add", file.path);
+                }
+            }
+            e.preventDefault();
+        };
+    </script>
 </html>

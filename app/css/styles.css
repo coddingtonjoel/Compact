@@ -12,10 +12,21 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    transform: translateY(-50px);
+    transform: translateY(-30px);
 }
 
 .compact-drop img {
-    height: 150px;
-    width: 150px;
+    height: 200px;
+    width: 200px;
+    user-select: none;
+}
+
+.compact-drop p {
+    font-size: 15px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.drag {
+    background-color: red;
 }
