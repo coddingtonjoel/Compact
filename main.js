@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const MainWindow = require("./MainWindow");
 const AppMenu = require("./AppMenu");
+const minifyFile = require("./minifyFile");
 
 process.env.NODE_ENV = "development";
 
@@ -19,8 +20,8 @@ app.on("ready", () => {
     new AppMenu(isDev);
 });
 
-ipcMain.on("file:add", (e, data) => {
-    console.log(data);
+ipcMain.on("file:add", (e, path) => {
+    minifyFile(path);
 });
 
 app.on("window-all-closed", () => {
