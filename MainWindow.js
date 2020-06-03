@@ -4,7 +4,7 @@ class MainWindow extends BrowserWindow {
     constructor(file, isDev) {
         super({
             title: "Compact",
-            width: 550,
+            width: 450,
             height: 600,
             // icon: "./assets/icons/icon.png",
             backgroundColor: "#F2F2F2",

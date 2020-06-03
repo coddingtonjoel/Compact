@@ -21,7 +21,7 @@ app.on("ready", () => {
 });
 
 ipcMain.on("file:add", (e, path) => {
-    minifyFile(path);
+    minifyFile(path, mainWindow);
 });
 
 app.on("window-all-closed", () => {
