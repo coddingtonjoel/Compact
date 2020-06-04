@@ -15,6 +15,10 @@ class MainWindow extends BrowserWindow {
         });
 
         this.loadFile(file);
+
+        const loadFile = (file) => {
+            this.loadFile(file);
+        };
     }
 }
 

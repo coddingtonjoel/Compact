@@ -5,6 +5,7 @@ document.ondragover = document.ondrop = (e) => {
     e.preventDefault();
 };
 
+// TODO add model for dropped item(s) and .appendChild() to a UL for each
 document.ondrop = (e) => {
     for (let file of e.dataTransfer.files) {
         // notify user about incompatible file types
@@ -23,7 +24,7 @@ document.ondrop = (e) => {
             ipcRenderer.send("file:add", file.path);
         }
     }
-    e.preventDefault();
+    // e.preventDefault();
 };
 
 // TODO add "minify:done" channel and open folder on completion
