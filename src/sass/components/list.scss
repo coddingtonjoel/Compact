@@ -1,0 +1,29 @@
+.list {
+    &-item-container {
+        height: 88vh;
+        background-color: white;
+    }
+
+    &-button-container {
+        background-color: #f2f2f2;
+        height: 12vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & * {
+            margin: 0 3rem;
+            width: 15rem;
+            background-color: #dbdbdb;
+            font-weight: 200;
+
+            &:hover {
+                background-color: #dbdbdb;
+            }
+
+            &:focus {
+                background-color: #dbdbdb;
+            }
+        }
+    }
+}

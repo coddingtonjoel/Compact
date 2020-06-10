@@ -1,13 +1,11 @@
-// abstracts
-
 // base
 @import "./base/reset.scss";
 @import "./base/fonts.scss";
 
 // components
 @import "./components/start.scss";
-
-// pages
+@import "./components/list.scss";
+@import "./components/item.scss";
 
 // vendors
 @import "./vendors/materialize.min.css";

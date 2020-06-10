@@ -1,28 +1,29 @@
 .start {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: Roboto-Light;
-
-  &-drop {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    transform: translateY(-30px);
+    font-family: Roboto-Light;
 
-    & img {
-      height: 200px;
-      width: 200px;
-      user-select: none;
-    }
+    &-drop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        transform: translateY(-30px);
 
-    & p {
-      font-size: 20px;
-      pointer-events: none;
-      user-select: none;
+        & img {
+            height: 200px;
+            width: 200px;
+            user-select: none;
+        }
+
+        & p {
+            font-size: 17px;
+            margin-top: 2rem;
+            pointer-events: none;
+            user-select: none;
+        }
     }
-  }
 }

@@ -23,7 +23,9 @@
   },
   "dependencies": {
     "@svgr/webpack": "^5.4.0",
+    "bytes": "^3.1.0",
     "csso": "^4.0.3",
+    "electron-log": "^4.2.1",
     "html-minifier": "^4.0.0",
     "imagemin": "^7.0.1",
     "imagemin-mozjpeg": "^9.0.0",
@@ -33,6 +35,9 @@
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "rimraf": "^3.0.2",
     "sass-loader": "^8.0.2",
     "terser": "^4.7.0",
     "url-loader": "^4.1.0"

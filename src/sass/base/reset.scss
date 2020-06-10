@@ -1,10 +1,16 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
 }
 
 html {
-  // defines that 1rem is 10px
-  font-size: 62.5%;
+    // defines that 1rem is 10px
+    font-size: 62.5%;
+    overflow: hidden;
+}
+
+// override default materialize toast styles
+.toast {
+    font-size: 1.3rem !important;
 }

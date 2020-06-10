@@ -8,67 +8,73 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const defaultInclude = path.resolve(__dirname, "src");
 
 module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
-        include: defaultInclude,
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "sass-loader" },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "postcss-loader",
+                ],
+                include: defaultInclude,
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    { loader: "style-loader" },
+                    { loader: "css-loader" },
+                    { loader: "sass-loader" },
+                ],
+                include: defaultInclude,
+            },
+            {
+                test: /\.jsx?$/,
+                use: [{ loader: "babel-loader" }],
+                include: defaultInclude,
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: ["file-loader"],
+            },
+            {
+                test: /\.svg$/,
+                use: ["@svgr/webpack", "url-loader"],
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: ["file-loader"],
+            },
+            {
+                test: /\.(eot|svg|ttf|woff|woff2)$/,
+                use: [
+                    {
+                        loader:
+                            "file-loader?name=font/[name]__[hash:base64:5].[ext]",
+                    },
+                ],
+                include: defaultInclude,
+            },
         ],
-        include: defaultInclude,
-      },
-      {
-        test: /\.jsx?$/,
-        use: [{ loader: "babel-loader" }],
-        include: defaultInclude,
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: ["file-loader"],
-      },
-      {
-        test: /\.svg$/,
-        use: ["@svgr/webpack", "url-loader"],
-      },
-      {
-        test: /\.(jpe?g|png|gif)$/,
-        use: [{ loader: "file-loader?name=img/[name]__[hash:base64:5].[ext]" }],
-        include: defaultInclude,
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        use: [
-          { loader: "file-loader?name=font/[name]__[hash:base64:5].[ext]" },
-        ],
-        include: defaultInclude,
-      },
+    },
+    target: "electron-renderer",
+    plugins: [
+        new HtmlWebpackPlugin({ title: "Compact" }),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "bundle.css",
+            chunkFilename: "[id].css",
+        }),
+        new webpack.DefinePlugin({
+            "process.env.NODE_ENV": JSON.stringify("production"),
+        }),
+        new BabiliPlugin(),
     ],
-  },
-  target: "electron-renderer",
-  plugins: [
-    new HtmlWebpackPlugin({ title: "Electron App" }),
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      filename: "bundle.css",
-      chunkFilename: "[id].css",
-    }),
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-    }),
-    new BabiliPlugin(),
-  ],
-  stats: {
-    colors: true,
-    children: false,
-    chunks: false,
-    modules: false,
-  },
+    stats: {
+        colors: true,
+        children: false,
+        chunks: false,
+        modules: false,
+    },
 };
