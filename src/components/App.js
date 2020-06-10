@@ -5,8 +5,6 @@ import "../sass/main.scss";
 import Start from "./Start";
 import List from "./List";
 
-// TODO add transition (with gsap?) between routes
-
 const App = () => {
     const [list, setList] = useState([]);
 
@@ -30,6 +28,7 @@ const App = () => {
                     oSize: data.oSize,
                     nSize: data.nSize,
                     oPath: data.oPath,
+                    newName: data.newName,
                 },
             ]);
         }

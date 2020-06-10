@@ -34,8 +34,6 @@ const Start = () => {
         e.preventDefault();
     };
 
-    // TODO add "minify:done" channel and open folder on completion
-
     // display toast for if file contains JSX
     ipcRenderer.on("minify:error-react", (e, data) => {
         M.toast({

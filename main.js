@@ -113,9 +113,7 @@ ipcMain.on("file:add", (e, path) => {
 
 ipcMain.on("file:remove", (e, data) => {
     // delete file from /Compact/temp/
-    rimraf(data.path, () => {
-        log.info("File removed from array");
-    });
+    rimraf(data.path, () => {});
 });
 
 // additional macOS settings for standarization

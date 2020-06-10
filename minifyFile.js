@@ -3,13 +3,16 @@ const path = require("path");
 const fs = require("fs");
 const electron = require("electron");
 
+// minifiers
 const Terser = require("terser");
 const HTMLMinifier = require("html-minifier");
 const CSSO = require("csso");
-const imagemin = require("imagemin"); //TODO Add image minification and Sass/SCSS
+const imagemin = require("imagemin");
 const imageminSvgo = require("imagemin-svgo");
 const imageminPngquant = require("imagemin-pngquant");
 const imageminMozjpeg = require("imagemin-mozjpeg");
+
+// other misc packages
 const bytes = require("bytes");
 
 const minifyFile = (filePath, mainWindow) => {
@@ -35,11 +38,19 @@ const minifyFile = (filePath, mainWindow) => {
         let counter = 1;
         while (fs.existsSync(saveLocation)) {
             let stringArr = name.split(".");
-            saveLocation = path.join(
-                userDataPath,
-                "temp",
-                stringArr[0] + "(" + counter + ")" + ".min." + stringArr[1]
-            );
+            let newString = "";
+            //return stringArr[0] + ".min." + stringArr[1];
+            for (let i = 0; i < stringArr.length; i++) {
+                if (i === stringArr.length - 2) {
+                    newString += stringArr[i] + "(" + counter + ").min.";
+                } else if (i === stringArr.length - 1) {
+                    newString += stringArr[i];
+                } else {
+                    newString += stringArr[i] + ".";
+                }
+            }
+
+            saveLocation = path.join(userDataPath, "temp", newString);
             counter++;
         }
     }
@@ -57,6 +68,7 @@ const minifyFile = (filePath, mainWindow) => {
             oSize: originalSize,
             nSize: newSize,
             oPath: filePath,
+            newName: newName,
         });
     };
 
@@ -126,7 +138,18 @@ const minifyFile = (filePath, mainWindow) => {
 // TODO add an option to enable or disable this!!
 const getNewName = (name) => {
     let stringArr = name.split(".");
-    return stringArr[0] + ".min." + stringArr[1];
+
+    let newString = "";
+    //return stringArr[0] + ".min." + stringArr[1];
+    for (let i = 0; i < stringArr.length; i++) {
+        if (i === stringArr.length - 1) {
+            newString += "min.";
+            newString += stringArr[i];
+        } else {
+            newString += stringArr[i] + ".";
+        }
+    }
+    return newString;
 };
 
 module.exports = minifyFile;
