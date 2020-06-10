@@ -12,9 +12,6 @@ const imageminSvgo = require("imagemin-svgo");
 const imageminPngquant = require("imagemin-pngquant");
 const imageminMozjpeg = require("imagemin-mozjpeg");
 
-// other misc packages
-const bytes = require("bytes");
-
 const minifyFile = (filePath, mainWindow) => {
     // ex. js, css, or html
     const extension = filePath.split(".").pop();
@@ -58,8 +55,8 @@ const minifyFile = (filePath, mainWindow) => {
     // function to send data (used later here)
     const sendData = () => {
         // calculate original and new sizes to send back to renderer
-        let originalSize = bytes(fs.statSync(filePath)["size"]);
-        let newSize = bytes(fs.statSync(saveLocation)["size"]);
+        let originalSize = fs.statSync(filePath)["size"];
+        let newSize = fs.statSync(saveLocation)["size"];
 
         mainWindow.webContents.send("file:minified", {
             path: saveLocation,

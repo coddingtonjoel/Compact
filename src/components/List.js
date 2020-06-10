@@ -9,11 +9,15 @@ import rimraf from "rimraf";
 import Item from "./Item";
 import M from "materialize-css";
 const dialog = remote.dialog;
+import bytes from "bytes";
 
 // TODO include a save dialog when they press minify files to select where they want to copy all the temp files to
 
 const List = (props) => {
     const [redir, setRedir] = useState(null);
+
+    // create total storage saved variable to calculate later
+    let totalSaved = 0;
 
     const handleCancel = () => {
         // if cancel is pressed and list of files isn't empty, prompt user to make sure they want to cancel
@@ -69,12 +73,28 @@ const List = (props) => {
             } else {
                 const finalPath = filePath[0];
 
+                // add min folder to selected path if it doesn't exist
+                if (!fs.existsSync(path.join(finalPath, "compact-min"))) {
+                    fs.mkdirSync(path.join(finalPath, "compact-min"));
+                }
+
                 props.fileList.forEach((file) => {
                     const finalName = file.path.split("/").pop();
-                    console.log(finalName);
-                    const newPath = path.join(finalPath + "/" + finalName);
+                    const newPath = path.join(
+                        finalPath,
+                        "compact-min",
+                        finalName
+                    );
                     fs.renameSync(file.path, newPath);
+                    let saved = file.oSize - file.nSize;
+                    totalSaved += saved;
                 });
+                // convert from bytes to kb / mb
+                totalSaved = bytes(totalSaved);
+                // pass up to App.js to pass into Finish.js
+                props.totalSaved(totalSaved);
+                props.finalPath(finalPath);
+                setRedir(<Redirect to="/finish" />);
             }
         }
     };
@@ -102,12 +122,12 @@ const List = (props) => {
             <div className="list-button-container">
                 <button
                     onClick={handleCancel}
-                    className="btn waves-effect black-text list-button z-depth-0">
+                    className="btn waves-effect black-text list-button z-depth-1">
                     CANCEL
                 </button>
                 <button
                     onClick={handleMinify}
-                    className="btn waves-effect black-text list-button z-depth-0">
+                    className="btn waves-effect black-text list-button z-depth-1">
                     MINIFY FILES
                 </button>
             </div>

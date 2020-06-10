@@ -4,14 +4,25 @@ import { ipcRenderer } from "electron";
 import "../sass/main.scss";
 import Start from "./Start";
 import List from "./List";
+import Finish from "./Finish";
 
 const App = () => {
     const [list, setList] = useState([]);
+    const [totalSaved, setTotalSaved] = useState(0);
+    const [finalPath, setFinalPath] = useState(null);
 
     // remove specific item from list (passed up: App.js <- List.js <- Item.js)
     const handleRemove = (path) => {
         const newList = list.filter((item) => item.path !== path);
         setList(newList);
+    };
+
+    const getTotalSaved = (amount) => {
+        setTotalSaved(amount);
+    };
+
+    const getFinalPath = (path) => {
+        setFinalPath(path);
     };
 
     ipcRenderer.on("file:minified", (e, data) => {
@@ -41,12 +52,20 @@ const App = () => {
                     <List
                         fileList={list}
                         remove={handleRemove}
+                        totalSaved={(amount) => {
+                            setTotalSaved(amount);
+                        }}
+                        finalPath={(path) => {
+                            setFinalPath(path);
+                        }}
                         clearList={() => {
                             setList([]);
                         }}
                     />
                 </Route>
-                />
+                <Route exact path="/finish">
+                    <Finish totalSaved={totalSaved} finalPath={finalPath} />
+                </Route>
                 <Route exact path="/" component={Start} />
             </Switch>
         </Router>

@@ -5,6 +5,7 @@ import close from "../../assets/images/close.svg";
 import html from "../../assets/images/html.png";
 import css from "../../assets/images/css.png";
 import js from "../../assets/images/js.png";
+import bytes from "bytes";
 
 const Item = (props) => {
     // identify icon from type given
@@ -39,7 +40,7 @@ const Item = (props) => {
             <img className="item-type" src={icon} alt="" draggable="false" />
             <span className="item-name">{props.name}</span>
             <span className="item-size">
-                {props.oSize}&nbsp;&#8594;&nbsp;{props.nSize}
+                {bytes(props.oSize)}&nbsp;&#8594;&nbsp;{bytes(props.nSize)}
             </span>
             <img
                 className="item-visible"
