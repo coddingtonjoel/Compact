@@ -29,7 +29,7 @@ function createMainWindow() {
         show: false,
         backgroundColor: "#F2F2F2",
         resizable: isDev,
-        //icon: `${__dirname}/assets/icon.png`,
+        icon: `${__dirname}/assets/icons/linux.png`,
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,

@@ -10,6 +10,11 @@ const App = () => {
     const [list, setList] = useState([]);
     const [totalSaved, setTotalSaved] = useState(0);
     const [finalPath, setFinalPath] = useState(null);
+    const [loading, setLoading] = useState(null);
+
+    const handleLoading = (value) => {
+        setLoading(value);
+    };
 
     // remove specific item from list (passed up: App.js <- List.js <- Item.js)
     const handleRemove = (path) => {
@@ -61,12 +66,15 @@ const App = () => {
                         clearList={() => {
                             setList([]);
                         }}
+                        loading={loading}
                     />
                 </Route>
                 <Route exact path="/finish">
                     <Finish totalSaved={totalSaved} finalPath={finalPath} />
                 </Route>
-                <Route exact path="/" component={Start} />
+                <Route exact path="/">
+                    <Start loading={handleLoading} />
+                </Route>
             </Switch>
         </Router>
     );

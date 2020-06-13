@@ -11,8 +11,6 @@ import M from "materialize-css";
 const dialog = remote.dialog;
 import bytes from "bytes";
 
-// TODO include a save dialog when they press minify files to select where they want to copy all the temp files to
-
 const List = (props) => {
     const [redir, setRedir] = useState(null);
 
@@ -119,6 +117,7 @@ const List = (props) => {
                     );
                 })}
             </div>
+            {props.loading}
             <div className="list-button-container">
                 <button
                     onClick={handleCancel}
