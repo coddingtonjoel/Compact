@@ -8,8 +8,21 @@ const minifyFile = require("./minifyFile");
 const rimraf = require("rimraf");
 const log = require("electron-log");
 
-app.setMaxListeners(20);
-ipcMain.setMaxListeners(20);
+// add react dev tools
+const installExtensions = async () => {
+    const installer = require("electron-devtools-installer");
+    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+    const extensions = ["REACT_DEVELOPER_TOOLS", "REDUX_DEVTOOLS", "DEVTRON"];
+
+    return Promise.all(
+        extensions.map((name) =>
+            installer.default(installer[name], forceDownload)
+        )
+    ).catch(console.log);
+};
+
+app.setMaxListeners(30);
+ipcMain.setMaxListerers(30);
 
 let mainWindow;
 
@@ -39,6 +52,7 @@ function createMainWindow() {
     let indexPath;
 
     if (isDev && process.argv.indexOf("--noDevServer") === -1) {
+        installExtensions();
         indexPath = url.format({
             protocol: "http:",
             host: "localhost:8080",

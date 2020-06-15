@@ -3,13 +3,14 @@ import os from "os";
 import fs from "fs";
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-const { remote } = require("electron");
+// const { remote } = require("electron");
 const electron = require("electron");
 import rimraf from "rimraf";
 import Item from "./Item";
 import M from "materialize-css";
-const dialog = remote.dialog;
+// const dialog = remote.dialog;
 import bytes from "bytes";
+import log from "electron-log";
 
 const List = (props) => {
     const [redir, setRedir] = useState(null);

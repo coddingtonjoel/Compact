@@ -10,7 +10,7 @@ import M from "materialize-css";
 import { send } from "process";
 
 const Start = (props) => {
-    const [redir, setRedir] = useState(null);
+    const [redir, setRedir] = useState(false);
 
     let incompatibleFiles = 0;
 
@@ -70,7 +70,9 @@ const Start = (props) => {
             }
             // reset for next drag and drop
             incompatibleFiles = 0;
-            props.loading(null);
+            setTimeout(() => {
+                props.loading(false);
+            }, 500);
         };
 
         document.ondragover = document.ondrop = (e) => {
