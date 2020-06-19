@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ipcRenderer, shell } from "electron";
+import { ListContext } from "../context/ListContext";
 import visible from "../../assets/images/visible.svg";
 import close from "../../assets/images/close.svg";
 import html from "../../assets/images/html.png";
@@ -8,6 +9,8 @@ import js from "../../assets/images/js.png";
 import bytes from "bytes";
 
 const Item = (props) => {
+    const [list, setList] = useContext(ListContext);
+
     // identify icon from type given
     let icon;
 
@@ -23,15 +26,18 @@ const Item = (props) => {
             break;
     }
 
+    const handleRemove = () => {
+        ipcRenderer.send("file:remove", {
+            path: props.path,
+        });
+        const newList = list.filter((item) => props.path !== path);
+        setList(newList);
+    };
+
     return (
         <div className="item">
             <img
-                onClick={() => {
-                    ipcRenderer.send("file:remove", {
-                        path: props.path,
-                    });
-                    props.remove(props.path);
-                }}
+                onClick={handleRemove}
                 className="item-close"
                 src={close}
                 alt=""

@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import path from "path";
 import { shell } from "electron";
 import electron from "electron";
+import { ListContext } from "../context/ListContext";
 import rimraf from "rimraf";
+import log from "electron-log";
 import check from "../../assets/images/done.svg";
 
 const Finish = (props) => {
     const [redir, setRedir] = useState(null);
+    const [list, setList] = useContext(ListContext);
 
     const handleStartAgain = () => {
         const userDataPath = (electron.app || electron.remote.app).getPath(
             "userData"
         );
         rimraf(path.join(userDataPath, "temp"), () => {
+            log.info("Temporary files cleared");
+            setList([]);
             setRedir(<Redirect to="/" />);
+            console.log(list);
         });
     };
 

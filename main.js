@@ -1,7 +1,8 @@
 const path = require("path");
 const url = require("url");
+const os = require("os");
 const fs = require("fs");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const electron = require("electron");
 const AppMenu = require("./AppMenu");
 const minifyFile = require("./minifyFile");
@@ -21,9 +22,6 @@ const installExtensions = async () => {
     ).catch(console.log);
 };
 
-app.setMaxListeners(30);
-ipcMain.setMaxListerers(30);
-
 let mainWindow;
 
 let isDev = false;
@@ -37,7 +35,7 @@ if (
 
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        width: 450,
+        width: isDev ? 700 : 450,
         height: 600,
         show: false,
         backgroundColor: "#F2F2F2",
@@ -83,7 +81,7 @@ function createMainWindow() {
             installExtension(REACT_DEVELOPER_TOOLS).catch((err) =>
                 console.log("Error loading React DevTools: ", err)
             );
-            //mainWindow.webContents.openDevTools();
+            mainWindow.webContents.openDevTools();
         }
     });
 
@@ -129,6 +127,56 @@ ipcMain.on("file:remove", (e, data) => {
     // delete file from /Compact/temp/
     rimraf(data.path, () => {});
 });
+
+ipcMain.on("list:cancel", (e) => {
+    dialog
+        .showMessageBox({
+            type: "warning",
+            title: "Cancel Minification",
+            message: "Cancel Minification?",
+            detail:
+                "If you cancel minification, the changes you have made to the selected files will be lost.",
+            buttons: ["Stop", "Close without Saving"],
+            cancelId: 0,
+        })
+        .then((data) => {
+            // if choice is "Close without Saving"
+            if (data.response === 1) {
+                e.reply("list:cancelled");
+                const userDataPath = (
+                    electron.app || electron.remote.app
+                ).getPath("userData");
+                rimraf(path.join(userDataPath, "temp"), () => {
+                    log.info("Temporary files cleared");
+                });
+            }
+        });
+});
+
+ipcMain.on("list:save", (e) => {
+    async function returnSavePath(path) {
+        console.log("awaiting");
+        const filePath = await getSavePath();
+        console.log(filePath);
+        e.reply("list:saved", {
+            filePath: filePath,
+        });
+    }
+    returnSavePath();
+});
+
+const getSavePath = () => {
+    console.log("getting save path");
+    return new Promise((resolve) => {
+        resolve(
+            dialog.showOpenDialogSync({
+                defaultPath: path.join(os.homedir(), "desktop"),
+                properties: ["openDirectory", "createDirectory"],
+                buttonLabel: "Save",
+            })
+        );
+    });
+};
 
 // additional macOS settings for standarization
 
