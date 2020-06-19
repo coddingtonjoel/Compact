@@ -1,16 +1,12 @@
 import path from "path";
-import os from "os";
 import fs from "fs";
 import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
-const electron = require("electron");
-import rimraf from "rimraf";
 import Item from "./Item";
 import M from "materialize-css";
 import { ListContext } from "../context/ListContext";
-import { dialog, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 import bytes from "bytes";
-import log from "electron-log";
 
 const List = (props) => {
     const [redir, setRedir] = useState(null);
@@ -19,13 +15,37 @@ const List = (props) => {
     // create total storage saved variable to calculate later
     let totalSaved = 0;
 
+    // when file is dropped, this is the response from main process that the file was minified
+    ipcRenderer.on("file:minified", (e, data) => {
+        // if item's path already exists on list, don't add it
+        if (list.some((item) => item.path === data.path)) {
+            return false;
+        } else {
+            let newList = list;
+            newList.push({
+                name: data.name,
+                path: data.path,
+                type: data.type,
+                oSize: data.oSize,
+                nSize: data.nSize,
+                oPath: data.oPath,
+                newName: data.newName,
+            });
+
+            setList(newList);
+            console.log("ONE FILE DROPPED. CURRENT LIST:");
+            console.log(list);
+        }
+    });
+
     const handleCancel = () => {
         // if cancel is pressed and list of files isn't empty, prompt user to make sure they want to cancel
         if (list.length !== 0) {
             ipcRenderer.send("list:cancel");
             ipcRenderer.on("list:cancelled", (e) => {
                 setList([]);
-                console.log("List cleared!");
+                console.log("Cancelled. Current List:");
+                console.log(list);
                 setRedir(<Redirect to="/" />);
             });
         }
@@ -54,24 +74,48 @@ const List = (props) => {
                 } else {
                     const finalPath = filePath[0];
 
+                    // TODO add dialog here to overwrite compact-min folder?
+
                     // add min folder to selected path if it doesn't exist
                     if (!fs.existsSync(path.join(finalPath, "compact-min"))) {
                         fs.mkdirSync(path.join(finalPath, "compact-min"));
                     }
 
-                    // THIS IS THE VARIABLE THAT ISNT UPDATING --> props.fileList
-                    console.log("currentList(): " + list);
-                    list.forEach((file) => {
-                        const finalName = file.path.split("/").pop();
+                    console.log("current");
+                    console.log(list);
+
+                    // list.forEach((file) => {
+                    //     const finalName = file.path.split("/").pop();
+                    //     const newPath = path.join(
+                    //         finalPath,
+                    //         "compact-min",
+                    //         finalName
+                    //     );
+                    //     fs.renameSync(file.path, newPath);
+                    //     let saved = file.oSize - file.nSize;
+                    //     totalSaved += saved;
+                    // });
+                    let newList = list;
+                    while (newList.length !== 0) {
+                        const finalName = newList[0].path.split("/").pop();
                         const newPath = path.join(
                             finalPath,
                             "compact-min",
                             finalName
                         );
-                        fs.renameSync(file.path, newPath);
-                        let saved = file.oSize - file.nSize;
+                        try {
+                            fs.renameSync(newList[0].path, newPath);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        let saved = newList[0].oSize - newList[0].nSize;
                         totalSaved += saved;
-                    });
+                        newList.shift();
+                    }
+                    newList = [];
+                    setList(newList);
+
+                    // setList([]);
                     // convert from bytes to kb / mb
                     totalSaved = bytes(totalSaved);
                     // pass up to App.js to pass into Finish.js
@@ -82,37 +126,6 @@ const List = (props) => {
             });
         }
     };
-    ipcRenderer.on("file:minified", (e, data) => {
-        // if item's path already exists on list, don't add it
-        if (list.some((item) => item.path === data.path)) {
-            return false;
-        } else {
-            // let newList = list;
-            // newList.push({
-            // name: data.name,
-            // path: data.path,
-            // type: data.type,
-            // oSize: data.oSize,
-            // nSize: data.nSize,
-            // oPath: data.oPath,
-            // newName: data.newName,
-            // });
-            setList([
-                ...list,
-                {
-                    name: data.name,
-                    path: data.path,
-                    type: data.type,
-                    oSize: data.oSize,
-                    nSize: data.nSize,
-                    oPath: data.oPath,
-                    newName: data.newName,
-                },
-            ]);
-            console.log(list);
-        }
-        console.log("ONE FILE DROPPED. CURRENT LIST: " + list);
-    });
 
     return (
         <div className="list">

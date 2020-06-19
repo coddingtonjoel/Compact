@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import { ipcRenderer } from "electron";
 import "../sass/main.scss";
 import Start from "./Start";
 import List from "./List";

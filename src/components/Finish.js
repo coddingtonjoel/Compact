@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import path from "path";
-import { shell } from "electron";
+import { shell, ipcRenderer } from "electron";
 import electron from "electron";
 import { ListContext } from "../context/ListContext";
 import rimraf from "rimraf";
@@ -18,14 +18,20 @@ const Finish = (props) => {
         );
         rimraf(path.join(userDataPath, "temp"), () => {
             log.info("Temporary files cleared");
-            setList([]);
+            let newList = list;
+            newList.forEach((file) => list.pop());
+            setList(newList);
             setRedir(<Redirect to="/" />);
             console.log(list);
         });
     };
 
     return (
-        <div className="finish">
+        <div
+            className="finish"
+            onDrop={() => {
+                setRedir(<Redirect to="/list" />);
+            }}>
             <div className="finish-main">
                 <img
                     className="finish-main-check"

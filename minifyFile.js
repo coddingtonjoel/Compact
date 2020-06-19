@@ -1,4 +1,3 @@
-const os = require("os");
 const path = require("path");
 const fs = require("fs");
 const electron = require("electron");
@@ -24,6 +23,8 @@ const minifyFile = (filePath, mainWindow) => {
         "userData"
     );
     let saveLocation = path.join(userDataPath, "temp", newName);
+
+    console.log(saveLocation);
 
     // if "~/Library/Application Support/Compact/temp" doesn't exist, create it
     if (!fs.existsSync(path.join(userDataPath, "temp"))) {
