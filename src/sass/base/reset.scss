@@ -15,6 +15,14 @@ html {
     font-size: 1.3rem !important;
 }
 
+.jsx-toast {
+    position: absolute !important;
+    top: 0% !important;
+    left: 50% !important;
+    transform: translate(-50%, -120%) !important;
+    z-index: 1000 !important;
+}
+
 .base-loader {
     position: absolute !important;
     top: 50% !important;

@@ -18,39 +18,8 @@
         "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
         "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac.icns --prune=true --out=builds",
-        "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win.ico --prune=false --out=builds --version-string.coddingtonjoel=CE --version-string.FileDescription=CE --version-string.ProductName=\"Compact\"",
-        "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/linux.png --prune=false --out=builds",
-        "electron-build": "electron-builder"
-    },
-    "build": {
-        "appId": "com.compact.coddingtonjoel",
-        "productName": "Compact",
-        "copyright": "Copyright © 2020 Joel Coddington",
-        "dmg": {
-            "contents": [
-                {
-                    "x": 110,
-                    "y": 150
-                },
-                {
-                    "x": 240,
-                    "y": 150,
-                    "type": "link",
-                    "path": "/Applications"
-                }
-            ]
-        },
-        "linux": {
-            "target": [
-                "AppImage",
-                "deb"
-            ]
-        },
-        "win": {
-            "target": "squirrel",
-            "icon": "build/icon.ico"
-        }
+        "package": "yarn run build",
+        "postpackage": "electron-packager ./ --out=./release --icon=assets/icons/mac.icns"
     },
     "dependencies": {
         "@svgr/webpack": "^5.4.0",
@@ -83,7 +52,6 @@
         "cross-env": "^7.0.2",
         "css-loader": "^3.5.3",
         "electron": "^9.0.0",
-        "electron-builder": "^22.7.0",
         "electron-devtools-installer": "^3.0.0",
         "electron-packager": "^14.2.1",
         "file-loader": "^6.0.0",

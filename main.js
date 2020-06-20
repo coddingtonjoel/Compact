@@ -11,7 +11,7 @@ const log = require("electron-log");
 
 let mainWindow;
 
-let isDev = false;
+let isDev;
 
 if (
     process.env.NODE_ENV !== undefined &&

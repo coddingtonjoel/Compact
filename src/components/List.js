@@ -17,6 +17,7 @@ const List = (props) => {
 
     // when file is dropped, this is the response from main process that the file was minified
     ipcRenderer.on("file:minified", (e, data) => {
+        console.log("file:minified - renderer");
         // if item's path already exists on list, don't add it
         if (list.some((item) => item.path === data.path)) {
             return false;
@@ -33,7 +34,6 @@ const List = (props) => {
             });
 
             setList(newList);
-            console.log("ONE FILE DROPPED. CURRENT LIST:");
             console.log(list);
         }
     });
@@ -84,17 +84,6 @@ const List = (props) => {
                     console.log("current");
                     console.log(list);
 
-                    // list.forEach((file) => {
-                    //     const finalName = file.path.split("/").pop();
-                    //     const newPath = path.join(
-                    //         finalPath,
-                    //         "compact-min",
-                    //         finalName
-                    //     );
-                    //     fs.renameSync(file.path, newPath);
-                    //     let saved = file.oSize - file.nSize;
-                    //     totalSaved += saved;
-                    // });
                     let newList = list;
                     while (newList.length !== 0) {
                         const finalName = newList[0].path.split("/").pop();
@@ -115,7 +104,6 @@ const List = (props) => {
                     newList = [];
                     setList(newList);
 
-                    // setList([]);
                     // convert from bytes to kb / mb
                     totalSaved = bytes(totalSaved);
                     // pass up to App.js to pass into Finish.js
@@ -125,6 +113,14 @@ const List = (props) => {
                 }
             });
         }
+    };
+
+    const handleRemove = (path) => {
+        ipcRenderer.send("file:remove", {
+            path: path,
+        });
+        const newList = list.filter((item) => path !== path);
+        setList(newList);
     };
 
     return (
@@ -140,6 +136,7 @@ const List = (props) => {
                             path={item.path}
                             oPath={item.oPath}
                             key={item.path}
+                            remove={handleRemove}
                         />
                     );
                 })}

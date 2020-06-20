@@ -68,6 +68,8 @@ const minifyFile = (filePath, mainWindow) => {
             oPath: filePath,
             newName: newName,
         });
+
+        console.log("file:minified");
     };
 
     // JavaScript Minification
