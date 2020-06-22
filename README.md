@@ -6,7 +6,7 @@ Compact is an all-in-one code minifier for desktop. Using Electron and React.js,
 
 **Compact is currently in a pre-alpha stage, so everything you see may be subject to change.
 
-![Compact Logo](https://i.imgur.com/y0O8GTn.jpg)
+<img src="https://i.imgur.com/y0O8GTn.jpg" alt="logo" width="200"/>
 
 ![Compact Start](https://i.imgur.com/vY23VNb.jpg)
 
