@@ -38,7 +38,7 @@
         "react-dom": "^16.13.1",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "react-transition-group": "^4.4.1",
+        "react-toastify": "^6.0.6",
         "rimraf": "^3.0.2",
         "sass-loader": "^8.0.2",
         "terser": "^4.7.0",

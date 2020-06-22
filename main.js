@@ -25,8 +25,11 @@ function createMainWindow() {
         width: isDev ? 700 : 450,
         height: 600,
         show: false,
+        frame: false,
+        opacity: 0.95,
         backgroundColor: "#F2F2F2",
-        resizable: isDev,
+        minWidth: 450,
+        minHeight: 475,
         icon: `${__dirname}/assets/icons/linux.png`,
         webPreferences: {
             nodeIntegration: true,
@@ -141,9 +144,7 @@ ipcMain.on("list:cancel", (e) => {
 
 ipcMain.on("list:save", (e) => {
     async function returnSavePath(path) {
-        console.log("awaiting");
         const filePath = await getSavePath();
-        console.log(filePath);
         e.reply("list:saved", {
             filePath: filePath,
         });
@@ -152,7 +153,6 @@ ipcMain.on("list:save", (e) => {
 });
 
 const getSavePath = () => {
-    console.log("getting save path");
     return new Promise((resolve) => {
         resolve(
             dialog.showOpenDialogSync({

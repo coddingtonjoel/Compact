@@ -1,12 +1,12 @@
 import path from "path";
 import fs from "fs";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import Item from "./Item";
-import M from "materialize-css";
 import { ListContext } from "../context/ListContext";
 import { ipcRenderer } from "electron";
 import bytes from "bytes";
+import { ToastContainer, toast, Zoom } from "react-toastify";
 
 const List = (props) => {
     const [redir, setRedir] = useState(null);
@@ -14,29 +14,6 @@ const List = (props) => {
 
     // create total storage saved variable to calculate later
     let totalSaved = 0;
-
-    // when file is dropped, this is the response from main process that the file was minified
-    ipcRenderer.on("file:minified", (e, data) => {
-        console.log("file:minified - renderer");
-        // if item's path already exists on list, don't add it
-        if (list.some((item) => item.path === data.path)) {
-            return false;
-        } else {
-            let newList = list;
-            newList.push({
-                name: data.name,
-                path: data.path,
-                type: data.type,
-                oSize: data.oSize,
-                nSize: data.nSize,
-                oPath: data.oPath,
-                newName: data.newName,
-            });
-
-            setList(newList);
-            console.log(list);
-        }
-    });
 
     const handleCancel = () => {
         // if cancel is pressed and list of files isn't empty, prompt user to make sure they want to cancel
@@ -56,10 +33,10 @@ const List = (props) => {
     };
 
     const handleMinify = () => {
-        // if minify is pressed and list of files is empty, display materialize toast
+        // if minify is pressed and list of files is empty, display toast
         if (list.length === 0) {
-            M.toast({
-                html: "List of files is currently empty.",
+            toast.info("List of files is currently empty.", {
+                toastId: "empty",
             });
         }
         // otherwise show save dialog and move all files from /Compact/temp/ to the desired location
@@ -67,11 +44,7 @@ const List = (props) => {
             ipcRenderer.send("list:save");
             ipcRenderer.on("list:saved", (e, data) => {
                 let filePath = data.filePath;
-                if (filePath === undefined) {
-                    M.toast({
-                        html: "Save process was interrupted.",
-                    });
-                } else {
+                if (filePath !== undefined) {
                     const finalPath = filePath[0];
 
                     // TODO add dialog here to overwrite compact-min folder?
@@ -119,7 +92,7 @@ const List = (props) => {
         ipcRenderer.send("file:remove", {
             path: path,
         });
-        const newList = list.filter((item) => path !== path);
+        const newList = list.filter((item) => item.path !== path);
         setList(newList);
     };
 
@@ -154,6 +127,15 @@ const List = (props) => {
                     MINIFY FILES
                 </button>
             </div>
+            <ToastContainer
+                position="top-center"
+                transition={Zoom}
+                autoClose={3000}
+                hideProgressBar={false}
+                pauseOnHover={false}
+                newestOnTop={true}
+                closeOnClick
+            />
             {redir}
         </div>
     );

@@ -16,6 +16,10 @@ __benchmarks__
 
 build/
 
+release/
+
+dist/
+
 remote-repo/
 
 coverage/

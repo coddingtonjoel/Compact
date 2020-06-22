@@ -1,24 +1,22 @@
-import React, { useState } from "react";
-import {
-    HashRouter as Router,
-    Route,
-    Switch,
-    Redirect,
-} from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import "../sass/main.scss";
+import M from "materialize-css";
 import { ipcRenderer } from "electron";
 import fs from "fs";
 import path from "path";
-import M from "materialize-css";
 import Start from "./Start";
 import List from "./List";
 import Finish from "./Finish";
+import { ListContext } from "../context/ListContext";
+import { ToastContainer, toast, Zoom } from "react-toastify";
 
 const App = () => {
     const [totalSaved, setTotalSaved] = useState(0);
     const [finalPath, setFinalPath] = useState(null);
     const [loading, setLoading] = useState(null);
     const [redir, setRedir] = useState(false);
+    const [list, setList] = useContext(ListContext);
 
     const getTotalSaved = (amount) => {
         setTotalSaved(amount);
@@ -44,13 +42,17 @@ const App = () => {
                 });
                 sendFiles(files);
             } else {
-                // notify user about incompatible file types
+                // don't add duplicate files to list TODO THIS ISNT WORKING
+                if (list.some((item) => item.oPath === file.path)) {
+                    return false;
+                }
                 if (
                     file.split(".").pop() !== "js" &&
                     file.split(".").pop() !== "css" &&
                     file.split(".").pop() !== "html" &&
                     file.split(".").pop() !== "svg"
                 ) {
+                    // notify user about incompatible file types
                     incompatibleFiles++;
                 } else {
                     ipcRenderer.send("file:add", file);
@@ -80,9 +82,10 @@ const App = () => {
         );
         sendFiles(files);
         if (incompatibleFiles > 0) {
-            M.toast({
-                html: `${incompatibleFiles} file(s) could not be minified due to incompatible file type.`,
-            });
+            toast.info(
+                `${incompatibleFiles} file(s) could not be minified due to incompatible file type.`,
+                {}
+            );
         }
         // reset for next drag and drop
         incompatibleFiles = 0;
@@ -100,45 +103,75 @@ const App = () => {
     document.ondrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("handle files...");
         handleFiles(e.dataTransfer.files);
-        console.log("handled");
     };
 
     // display toast for if file contains JSX
     ipcRenderer.on("minify:error-react", (e, data) => {
-        M.toast({
-            html: `${data.path
+        toast.info(
+            `${data.path
                 .split("/")
                 .pop()} could not be minified because the file contains JSX.`,
-            classes: "jsx-toast",
-        });
+            {
+                toastId: data.path,
+            }
+        );
+    });
+
+    // when file is dropped, this is the response from main process that the file was minified
+    ipcRenderer.on("file:minified", (e, data) => {
+        // if item's path already exists on list, don't add it
+        // TODO: currently affected by memory leak bug if this if statement isn't here
+        if (list.some((item) => item.path === data.path)) {
+            return false;
+        } else {
+            let newList = list;
+            newList.push({
+                name: data.name,
+                path: data.path,
+                type: data.type,
+                oSize: data.oSize,
+                nSize: data.nSize,
+                oPath: data.oPath,
+                newName: data.newName,
+            });
+
+            setList(newList);
+            console.log(list);
+        }
     });
 
     return (
-        <Router>
-            <Switch>
-                <Route exact path="/list">
-                    <List
-                        totalSaved={(amount) => {
-                            setTotalSaved(amount);
-                        }}
-                        finalPath={(path) => {
-                            setFinalPath(path);
-                        }}
-                        loading={loading}
-                    />
-                </Route>
-                <Route exact path="/finish">
-                    <Finish totalSaved={totalSaved} finalPath={finalPath} />
-                </Route>
-                <Route exact path="/">
-                    <Start />
-                </Route>
-            </Switch>
+        <Switch>
+            <Route exact path="/list">
+                <List
+                    totalSaved={(amount) => {
+                        setTotalSaved(amount);
+                    }}
+                    finalPath={(path) => {
+                        setFinalPath(path);
+                    }}
+                    loading={loading}
+                />
+            </Route>
+            <Route exact path="/finish">
+                <Finish totalSaved={totalSaved} finalPath={finalPath} />
+            </Route>
+            <Route exact path="/">
+                <Start />
+            </Route>
             {redir}
-        </Router>
+            <ToastContainer
+                position="top-center"
+                transition={Zoom}
+                autoClose={3000}
+                hideProgressBar={false}
+                pauseOnHover={false}
+                newestOnTop={true}
+                closeOnClick
+            />
+        </Switch>
     );
 };
 
-export default App;
+export default withRouter(App);

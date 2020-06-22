@@ -10,17 +10,9 @@ html {
     overflow: hidden;
 }
 
-// override default materialize toast styles
-.toast {
-    font-size: 1.3rem !important;
-}
-
-.jsx-toast {
-    position: absolute !important;
-    top: 0% !important;
-    left: 50% !important;
-    transform: translate(-50%, -120%) !important;
-    z-index: 1000 !important;
+body {
+    -webkit-app-region: drag;
+    background-color: #f2f2f2;
 }
 
 .base-loader {
@@ -38,4 +30,11 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 1s;
+}
+
+.Toastify__toast {
+    font-size: 1.2rem;
+    font-family: "Roboto-Light";
+    text-align: center;
 }

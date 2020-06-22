@@ -13,9 +13,9 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    "postcss-loader",
+                    { loader: "style-loader" },
+                    { loader: "css-loader" },
+                    { loader: "postcss-loader" },
                 ],
                 include: defaultInclude,
             },
@@ -34,26 +34,12 @@ module.exports = {
                 include: defaultInclude,
             },
             {
+                test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf|otf)$/,
+                use: ["file-loader"],
+            },
+            {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: ["file-loader"],
-            },
-            {
-                test: /\.svg$/,
-                use: ["@svgr/webpack", "url-loader"],
-            },
-            {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: ["file-loader"],
-            },
-            {
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
-                use: [
-                    {
-                        loader:
-                            "file-loader?name=font/[name]__[hash:base64:5].[ext]",
-                    },
-                ],
-                include: defaultInclude,
             },
         ],
     },

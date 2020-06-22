@@ -15,7 +15,7 @@ const Start = (props) => {
                 setRedir(<Redirect to="/list" />);
             }}>
             <div className="start-drop">
-                <img src={drop} draggable="false" alt="" />
+                <img src={drop} draggable={false} alt="" />
                 <p>Drop files or folders here to minify.</p>
             </div>
             {redir}

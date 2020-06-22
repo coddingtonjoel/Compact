@@ -33,22 +33,12 @@ module.exports = {
                 include: defaultInclude,
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf|otf)$/,
                 use: ["file-loader"],
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: ["file-loader"],
-            },
-            {
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
-                use: [
-                    {
-                        loader:
-                            "file-loader?name=font/[name]__[hash:base64:5].[ext]",
-                    },
-                ],
-                include: defaultInclude,
             },
         ],
     },

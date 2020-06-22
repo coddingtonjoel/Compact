@@ -41,7 +41,7 @@ const Finish = (props) => {
                 />
                 <p className="finish-main-head">Finished minifying files.</p>
                 <p className="finish-main-sub">
-                    You saved {props.totalSaved} of space!
+                    You saved {props.totalSaved} worth of space!
                 </p>
             </div>
             <div className="finish-buttons-container">
