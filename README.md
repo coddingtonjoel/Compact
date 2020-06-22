@@ -2,9 +2,9 @@
 
 ---
 
-Compact is an all-in-one code minifier for desktop. Using Electron and React.js, Compact aims to allow users to create batch exports of minified files at a very fast speed.
+#### Compact is an all-in-one code minifier for desktop. Using Electron and React.js, Compact aims to allow users to create batch exports of minified files at a very fast speed.
 
-**Compact is currently in a pre-alpha stage, so everything you see may be subject to change.
+###### **Compact is currently in a pre-alpha stage, so everything you see may be subject to change.
 
 <img src="https://i.imgur.com/y0O8GTn.jpg" alt="logo" width="200"/>
 
