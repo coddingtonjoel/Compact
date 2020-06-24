@@ -56,13 +56,13 @@ const App = () => {
                     incompatibleFiles++;
                 } else {
                     ipcRenderer.send("file:add", file);
-                    setRedir(<Redirect to="/list" />);
                 }
             }
         }
     };
 
     const handleFiles = (files) => {
+        setRedir(<Redirect to="/list" />);
         setLoading(
             <div className="base-loader">
                 <div className="preloader-wrapper big active">
@@ -105,6 +105,13 @@ const App = () => {
         e.stopPropagation();
         handleFiles(e.dataTransfer.files);
     };
+
+    ipcRenderer.on("start:opened", (e, data) => {
+        if (data.files !== undefined) {
+            console.log("success");
+            handleFiles(data.files);
+        }
+    });
 
     // display toast for if file contains JSX
     ipcRenderer.on("minify:error-react", (e, data) => {

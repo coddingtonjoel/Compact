@@ -14,4 +14,5 @@
 
 ![Compact Finish](https://i.imgur.com/f3zo0nX.jpg)
 
-Once beta hits, Compact will be making its way to the Mac App Store and Windows Store respectively, while staying open source on GitHub.
+Once beta hits, Compact will be making its way as a free developer tool to the Mac App Store and Windows Store while still staying open source on GitHub.
+

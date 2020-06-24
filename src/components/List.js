@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import Item from "./Item";
 import { ListContext } from "../context/ListContext";

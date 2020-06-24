@@ -25,5 +25,36 @@
             pointer-events: none;
             user-select: none;
         }
+
+        & > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 50%;
+            top: 80%;
+            transform: translateX(-50%);
+        }
+
+        & > div > p {
+            font-size: 1.35rem;
+            opacity: 0.6;
+            margin-bottom: 1rem;
+        }
+    }
+
+    &-open {
+        background-color: #dbdbdb;
+        font-weight: 200;
+        width: 15rem;
+
+        &:hover {
+            background-color: #dbdbdb;
+        }
+
+        &:enabled {
+            background-color: #dbdbdb;
+        }
     }
 }

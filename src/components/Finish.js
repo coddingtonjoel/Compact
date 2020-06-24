@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import path from "path";
-import { shell, ipcRenderer } from "electron";
+import { shell } from "electron";
 import electron from "electron";
 import { ListContext } from "../context/ListContext";
 import rimraf from "rimraf";

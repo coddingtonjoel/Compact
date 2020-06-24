@@ -92,7 +92,90 @@ app.on("ready", () => {
     createMainWindow();
 
     new AppMenu(isDev);
+
+    // APP IPC
+
+    ipcMain.on("file:add", (e, path) => {
+        minifyFile(path, mainWindow);
+    });
+
+    ipcMain.on("file:remove", (e, data) => {
+        // delete file from /Compact/temp/
+        rimraf(data.path, () => {});
+    });
+
+    ipcMain.on("list:cancel", (e) => {
+        dialog
+            .showMessageBox({
+                type: "warning",
+                title: "Cancel Minification",
+                message: "Cancel Minification?",
+                detail:
+                    "If you cancel minification, the changes you have made to the selected files will be lost.",
+                buttons: ["Stop", "Close without Saving"],
+                cancelId: 0,
+            })
+            .then((data) => {
+                // if choice is "Close without Saving"
+                if (data.response === 1) {
+                    e.reply("list:cancelled");
+                    const userDataPath = (
+                        electron.app || electron.remote.app
+                    ).getPath("userData");
+                    rimraf(path.join(userDataPath, "temp"), () => {
+                        log.info("Temporary files cleared");
+                    });
+                }
+            });
+    });
+
+    ipcMain.on("list:save", (e) => {
+        async function returnSavePath(path) {
+            const filePath = await getFilePath();
+            e.reply("list:saved", {
+                filePath: filePath,
+            });
+        }
+        returnSavePath();
+    });
+
+    ipcMain.on("start:open", (e) => {
+        const files = dialog.showOpenDialogSync({
+            defaultPath: path.join(os.homedir(), "desktop"),
+            properties: [
+                "openFile",
+                "openDirectory",
+                "createDirectory",
+                "multiSelections",
+            ],
+            filters: [
+                { name: "All Files", extensions: ["*"] },
+                {
+                    name: "Files",
+                    extensions: ["html", "js", "css", "svg"],
+                },
+            ],
+            buttonLabel: "Open",
+        });
+
+        e.reply("start:opened", {
+            files: files,
+        });
+    });
 });
+
+// asynchronously open files for saving
+const getFilePath = () => {
+    return new Promise((resolve) => {
+        resolve(
+            dialog.showOpenDialogSync({
+                defaultPath: path.join(os.homedir(), "desktop"),
+                properties: ["openDirectory", "createDirectory"],
+                buttonLabel: "Save",
+            })
+        );
+    });
+};
 
 // delete temporary files on quit
 app.on("before-quit", () => {
@@ -105,64 +188,6 @@ app.on("before-quit", () => {
         });
     }
 });
-
-// APP IPC
-
-ipcMain.on("file:add", (e, path) => {
-    minifyFile(path, mainWindow);
-});
-
-ipcMain.on("file:remove", (e, data) => {
-    // delete file from /Compact/temp/
-    rimraf(data.path, () => {});
-});
-
-ipcMain.on("list:cancel", (e) => {
-    dialog
-        .showMessageBox({
-            type: "warning",
-            title: "Cancel Minification",
-            message: "Cancel Minification?",
-            detail:
-                "If you cancel minification, the changes you have made to the selected files will be lost.",
-            buttons: ["Stop", "Close without Saving"],
-            cancelId: 0,
-        })
-        .then((data) => {
-            // if choice is "Close without Saving"
-            if (data.response === 1) {
-                e.reply("list:cancelled");
-                const userDataPath = (
-                    electron.app || electron.remote.app
-                ).getPath("userData");
-                rimraf(path.join(userDataPath, "temp"), () => {
-                    log.info("Temporary files cleared");
-                });
-            }
-        });
-});
-
-ipcMain.on("list:save", (e) => {
-    async function returnSavePath(path) {
-        const filePath = await getSavePath();
-        e.reply("list:saved", {
-            filePath: filePath,
-        });
-    }
-    returnSavePath();
-});
-
-const getSavePath = () => {
-    return new Promise((resolve) => {
-        resolve(
-            dialog.showOpenDialogSync({
-                defaultPath: path.join(os.homedir(), "desktop"),
-                properties: ["openDirectory", "createDirectory"],
-                buttonLabel: "Save",
-            })
-        );
-    });
-};
 
 // additional macOS settings for standarization
 

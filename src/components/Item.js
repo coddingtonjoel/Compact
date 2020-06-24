@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
-import { ipcRenderer, shell } from "electron";
+import { shell } from "electron";
 import { ListContext } from "../context/ListContext";
-import path from "path";
 import visible from "../../assets/images/visible.svg";
 import close from "../../assets/images/close.svg";
 import html from "../../assets/images/html.png";

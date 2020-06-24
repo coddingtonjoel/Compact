@@ -59,15 +59,23 @@ const minifyFile = (filePath, mainWindow) => {
         let originalSize = fs.statSync(filePath)["size"];
         let newSize = fs.statSync(saveLocation)["size"];
 
-        mainWindow.webContents.send("file:minified", {
-            path: saveLocation,
-            name: name,
-            type: extension,
-            oSize: originalSize,
-            nSize: newSize,
-            oPath: filePath,
-            newName: newName,
-        });
+        mainWindow.webContents.send(
+            "file:minified",
+            {
+                path: saveLocation,
+                name: name,
+                type: extension,
+                oSize: originalSize,
+                nSize: newSize,
+                oPath: filePath,
+                newName: newName,
+            }
+            // () => {
+            //     mainWindow.webContents.removeListener("file:minified", () => {
+            //         console.log("removed");
+            //     });
+            // }
+        );
     };
 
     // JavaScript Minification
