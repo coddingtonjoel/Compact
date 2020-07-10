@@ -16,6 +16,8 @@ __benchmarks__
 
 build/
 
+dist/
+
 release/
 
 dist/
