@@ -1,6 +1,7 @@
 {
     "name": "compact",
     "productName": "Compact",
+    "license": "GNU",
     "version": "1.0.0",
     "description": "All-in-one code minifier for desktop",
     "private": false,
@@ -19,7 +20,8 @@
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
         "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
         "package": "yarn run build",
-        "postpackage": "electron-packager ./ --out=./release --icon=assets/icons/mac.icns"
+        "postpackage": "electron-packager ./ --out=./release --icon=assets/icons/win.icns --platform=win32 --arch=x64",
+        "__postpackage": "electron-packager ./ --out=./release --icon=assets/icons/mac.icns"
     },
     "dependencies": {
         "@svgr/webpack": "^5.4.0",
