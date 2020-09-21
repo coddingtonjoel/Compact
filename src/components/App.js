@@ -18,18 +18,18 @@ const App = () => {
     const [redir, setRedir] = useState(false);
     const [list, setList] = useContext(ListContext);
 
-    const getTotalSaved = (amount) => {
+    const getTotalSaved = amount => {
         setTotalSaved(amount);
     };
 
-    const getFinalPath = (path) => {
+    const getFinalPath = path => {
         setFinalPath(path);
     };
 
     // counter for amount of incompatible types for each batch of dragged files
     let incompatibleFiles = 0;
 
-    const sendFiles = (files) => {
+    const sendFiles = files => {
         for (let file of files) {
             file = file.path || file;
 
@@ -37,13 +37,13 @@ const App = () => {
             if (fs.lstatSync(file).isDirectory()) {
                 // rename for clarity
                 let folder = file;
-                let files = fs.readdirSync(folder).map((fileName) => {
+                let files = fs.readdirSync(folder).map(fileName => {
                     return path.join(folder, fileName);
                 });
                 sendFiles(files);
             } else {
                 // don't add duplicate files to list TODO THIS ISNT WORKING
-                if (list.some((item) => item.oPath === file.path)) {
+                if (list.some(item => item.oPath === file.path)) {
                     return false;
                 }
                 if (
@@ -61,7 +61,7 @@ const App = () => {
         }
     };
 
-    const handleFiles = (files) => {
+    const handleFiles = files => {
         setRedir(<Redirect to="/list" />);
         setLoading(
             <div className="base-loader">
@@ -94,13 +94,13 @@ const App = () => {
         }, 300);
     };
 
-    document.ondragover = (e) => {
+    document.ondragover = e => {
         e.preventDefault();
         e.stopPropagation();
         e.dataTransfer.dropEffect = "copy";
     };
 
-    document.ondrop = (e) => {
+    document.ondrop = e => {
         e.preventDefault();
         e.stopPropagation();
         handleFiles(e.dataTransfer.files);
@@ -110,6 +110,7 @@ const App = () => {
         if (data.files !== undefined) {
             console.log("success");
             handleFiles(data.files);
+            setRedir(<Redirect to="/list" />);
         }
     });
 
@@ -129,7 +130,7 @@ const App = () => {
     ipcRenderer.on("file:minified", (e, data) => {
         // if item's path already exists on list, don't add it
         // TODO: currently affected by memory leak bug if this if statement isn't here
-        if (list.some((item) => item.path === data.path)) {
+        if (list.some(item => item.path === data.path)) {
             return false;
         } else {
             let newList = list;
@@ -152,10 +153,10 @@ const App = () => {
         <Switch>
             <Route exact path="/list">
                 <List
-                    totalSaved={(amount) => {
+                    totalSaved={amount => {
                         setTotalSaved(amount);
                     }}
-                    finalPath={(path) => {
+                    finalPath={path => {
                         setFinalPath(path);
                     }}
                     loading={loading}
